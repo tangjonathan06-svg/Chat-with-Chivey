@@ -1,4 +1,9 @@
-from random import randint
+import os
+from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
+_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def action(r):
     if r.lower()=="walk walk":
@@ -7,39 +12,20 @@ def action(r):
         return("woof woof woof woof woof woof woof woof woof")
     elif r.lower()=="no more greenies":
         return("grrrrrr grrrrrr grrrrrr grrrrrr grrrrrr grrrrrr")
+    elif "chicken" in r.lower():
+        return("A-WOOOOOOOOOOO")
+    elif "no treats" in r.lower():
+        return("hey not cool man")
     else:
-        return response()
+        return response(r)
 
-def response():
-    rand = randint(1,3)
-    if rand==1:
-        return("woof")
-    if rand==2:
-        return("arf arf")
-    if rand==3:
-        return("grrrrrr")
-        
-def kg():
-    x1=True
-    while(x1):
-            r1=input("Do you want to keep interacting? ")
-            if r1.lower()=="yes":
-                action()
-                kg()
-            elif r1.lower()=="no":
-                x1=False
-            else: 
-                print("that's not a reponse ")
-                kg()
-# x=True
-# while(x):
-#     r=input("Do you want to interact with Chive ")
-#     if r.lower()=="yes":
-#         action()
-#         kg()
-#         x=False
-#     elif r.lower()=="no":
-#         print("Don't be mean, talk to chive ")
-#     else:
-#         print("that's not a reponse ")
-
+def response(r):
+    result = _client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": "You are Chive, a dog. Respond using only dog sounds like woof, arf, bork, ruff, grr, awoo, yip. No real English. No actions. Maximum 5 words."},
+            {"role": "user", "content": r},
+        ],
+        temperature=0.9,
+    )
+    return result.choices[0].message.content.strip()
