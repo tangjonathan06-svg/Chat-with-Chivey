@@ -7,7 +7,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for msg in st.session_state.messages:
-    avatar = "chive.jpeg" if msg["role"] == "assistant" else None
+    avatar = "Chive.jpeg" if msg["role"] == "assistant" else None
     with st.chat_message(msg["role"], avatar=avatar):
         st.write(msg["content"])
 
